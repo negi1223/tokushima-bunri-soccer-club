@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (staffComments && typeof staffData !== 'undefined') {
     staffComments.innerHTML = staffData.map((s) => `
       <blockquote class="comment-card">
-        ${s.photo ? `<img src="${escapeHtml(s.photo)}" alt="${escapeHtml(s.name)}" class="comment-avatar">` : ''}
+        ${s.photo ? `<img src="${escapeHtml(s.photo)}" alt="${escapeHtml(s.name)}" class="comment-avatar" loading="lazy">` : ''}
         <p class="comment-role">${escapeHtml(s.role)}</p>
         <p class="comment-name">${escapeHtml(s.name)}</p>
         <p class="comment-text">${escapeHtml(s.comment)}</p>
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <article class="player-card${p.isStaff ? ' player-card--staff' : ''}" data-grade="${escapeHtml(p.grade)}">
         <div class="player-photo">
           ${p.photo
-            ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" class="player-photo-img">`
+            ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" class="player-photo-img" loading="lazy">`
             : `<span class="player-initial">${escapeHtml(p.initial)}</span>`}
         </div>
         <h3 class="player-name">${escapeHtml(p.name)}</h3>
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <li class="sponsor-card">
         <a class="sponsor-logo" href="${escapeHtml(s.url)}" target="_blank" rel="noopener sponsored">
           ${s.imageUrl
-            ? `<img src="${escapeHtml(s.imageUrl)}" alt="${escapeHtml(s.name)}">`
+            ? `<img src="${escapeHtml(s.imageUrl)}" alt="${escapeHtml(s.name)}" loading="lazy">`
             : `<span>${escapeHtml(s.shortName || s.name)}</span>`}
         </a>
         <div class="sponsor-info">
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (supportGrid && typeof supportData !== 'undefined') {
     supportGrid.innerHTML = supportData.map((s) => `
       <article class="support-card">
-        ${s.image ? `<img src="${escapeHtml(s.image)}" alt="${escapeHtml(s.title)}" class="support-image">` : ''}
+        ${s.image ? `<img src="${escapeHtml(s.image)}" alt="${escapeHtml(s.title)}" class="support-image" loading="lazy">` : ''}
         <h4 class="support-title">${escapeHtml(s.title)}</h4>
         <p class="support-lead">${escapeHtml(s.lead)}</p>
         <ul class="support-list">
