@@ -249,7 +249,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const haClass = row.homeAway === 'HOME' ? 'ha-home' : row.homeAway === 'AWAY' ? 'ha-away' : '';
       const haBadge = row.homeAway ? `<span class="ha-badge ${haClass}">${escapeHtml(row.homeAway)}</span>` : '';
       const subParts = [];
-      if (row.kickoffTime) subParts.push(`${escapeHtml(row.kickoffTime)} KICK OFF`);
+      // Googleフォームの時刻質問は "14:00:00" のように秒まで出力するので、
+      // "時:分" の部分だけを取り出して表示する（例："14:00"）
+      const timeMatch = String(row.kickoffTime || '').match(/^\d{1,2}:\d{2}/);
+      const kickoffShort = timeMatch ? timeMatch[0] : row.kickoffTime;
+      if (kickoffShort) subParts.push(`${escapeHtml(kickoffShort)} KICK OFF`);
       if (row.venue) subParts.push(escapeHtml(row.venue));
       const sub = subParts.length ? `<span class="opponent-sub">${subParts.join(' ・ ')}</span>` : '';
       return `${haBadge}<span class="opponent-name">${escapeHtml(row.opponent)}</span>${sub}`;
