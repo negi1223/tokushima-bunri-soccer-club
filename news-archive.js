@@ -38,10 +38,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const newsTagLabel = { match: '試合', info: 'お知らせ', recruit: '募集' };
 
   const rawNewsData = window.__syncedNewsData || (typeof newsData !== 'undefined' ? newsData : []);
-  // ホームと違い、件数は絞り込まない。新しい日付順にすべて並べる
-  const allNews = [...rawNewsData].sort(
-    (a, b) => (parseDateValue(b.date) ?? -Infinity) - (parseDateValue(a.date) ?? -Infinity)
-  );
+  // 更新一覧ページでは「固定」を上に集めたりはしない。全件をそのまま日付順に並べる。
+  // pinned だった項目は「重要」バッジが付くだけで、並び順には影響しない
+  const byNewestFirst = (a, b) => (parseDateValue(b.date) ?? -Infinity) - (parseDateValue(a.date) ?? -Infinity);
+  const allNews = [...rawNewsData].sort(byNewestFirst);
 
   if (allNews.length === 0) {
     if (empty) empty.hidden = false;
@@ -55,8 +55,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 「詳しい内容」が未入力の場合は、ホームと同じ短い説明文をそのまま表示する
     const detail = item.detail || item.text || '';
     return `
-      <article class="news-card" data-tag="${escapeHtml(item.tag)}">
-        <span class="news-tag news-tag--${escapeHtml(item.tag)}">${escapeHtml(newsTagLabel[item.tag] || 'お知らせ')}</span>
+      <article class="news-card" data-tag="${escapeHtml(item.tag)}" data-pinned="${item.pinned ? 'true' : 'false'}">
+        <span class="news-tag-group">
+          <span class="news-tag news-tag--${escapeHtml(item.tag)}">${escapeHtml(newsTagLabel[item.tag] || 'お知らせ')}</span>
+          ${item.pinned ? '<span class="news-tag-pinned">重要</span>' : ''}
+        </span>
         <time class="news-date">${escapeHtml(item.date)}</time>
         <h3 class="news-title">${escapeHtml(item.title)}</h3>
         <p class="news-text">${escapeHtml(item.text)}</p>
@@ -92,7 +95,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       let visibleCount = 0;
 
       cards.forEach((card) => {
-        const matches = target === 'all' || card.dataset.tag === target;
+        const matches = target === 'all'
+          ? true
+          : target === 'pinned'
+            ? card.dataset.pinned === 'true'
+            : card.dataset.tag === target;
         card.classList.toggle('is-hidden', !matches);
         if (matches) visibleCount += 1;
       });

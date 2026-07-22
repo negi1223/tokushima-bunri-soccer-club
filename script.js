@@ -163,13 +163,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   // データソース（Googleシート優先、なければ data.js のサンプル）を選んだうえで、
-  // 「ニュースは新しい日付順に最新◯件まで」「試合結果は今年度のみ・1月→12月の順」を必ず適用する。
+  // 「ニュースは新しい日付順に最新◯件まで（固定はその6件のカウントに含めない）」
+  // 「試合結果は今年度のみ・1月→12月の順」を必ず適用する。
   // ※これは data.js の手書きデータを使っているときも同じルールで動く
   //   （投稿・記入した順番に関係なく、日付そのもので正しく並ぶ）
   const rawNewsData = window.__syncedNewsData || (typeof newsData !== 'undefined' ? newsData : []);
-  const effectiveNewsData = [...rawNewsData]
-    .sort((a, b) => (parseDateValue(b.date) ?? -Infinity) - (parseDateValue(a.date) ?? -Infinity)) // 新しい日付が先頭
-    .slice(0, newsMaxItems);
+  const byNewestFirst = (a, b) => (parseDateValue(b.date) ?? -Infinity) - (parseDateValue(a.date) ?? -Infinity);
+  const pinnedNews = rawNewsData.filter((n) => n.pinned);
+  const otherNews = rawNewsData.filter((n) => !n.pinned).sort(byNewestFirst).slice(0, newsMaxItems);
+  // 固定を上に集めるのではなく、全体をまとめて日付の新しい順に並べる
+  // （固定は「6件のカウントから外れて必ず表示される」だけで、並び順は他と同じ）
+  const effectiveNewsData = [...pinnedNews, ...otherNews].sort(byNewestFirst);
 
   const rawScheduleData = window.__syncedScheduleData || (typeof scheduleData !== 'undefined' ? scheduleData : []);
   const effectiveScheduleData = rawScheduleData
@@ -189,7 +193,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (newsGrid) {
     newsGrid.innerHTML = effectiveNewsData.map((item) => `
       <article class="news-card">
-        <span class="news-tag news-tag--${item.tag}">${newsTagLabel[item.tag] || 'お知らせ'}</span>
+        <span class="news-tag-group">
+          <span class="news-tag news-tag--${item.tag}">${newsTagLabel[item.tag] || 'お知らせ'}</span>
+          ${item.pinned ? '<span class="news-tag-pinned">固定</span>' : ''}
+        </span>
         <time class="news-date">${escapeHtml(item.date)}</time>
         <h3 class="news-title">${escapeHtml(item.title)}</h3>
         <p class="news-text">${escapeHtml(item.text)}</p>
@@ -211,11 +218,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       return `<span class="badge badge-pending">${escapeHtml(result.text)}</span>`;
     };
 
+    // HOME/AWAYバッジ、キックオフ時刻・会場を対戦相手のセルにまとめて表示する
+    const renderOpponent = (row) => {
+      const haClass = row.homeAway === 'HOME' ? 'ha-home' : row.homeAway === 'AWAY' ? 'ha-away' : '';
+      const haBadge = row.homeAway ? `<span class="ha-badge ${haClass}">${escapeHtml(row.homeAway)}</span>` : '';
+      const subParts = [];
+      if (row.kickoffTime) subParts.push(`${escapeHtml(row.kickoffTime)} KICK OFF`);
+      if (row.venue) subParts.push(escapeHtml(row.venue));
+      const sub = subParts.length ? `<span class="opponent-sub">${subParts.join(' ・ ')}</span>` : '';
+      return `${haBadge}<span class="opponent-name">${escapeHtml(row.opponent)}</span>${sub}`;
+    };
+
     scheduleBody.innerHTML = effectiveScheduleData.map((row) => `
       <div class="scoreboard-row" role="row">
         <span role="cell" data-label="日付">${escapeHtml(row.date)}</span>
         <span role="cell" data-label="大会">${escapeHtml(row.competition)}</span>
-        <span role="cell" data-label="対戦相手">${escapeHtml(row.opponent)}</span>
+        <span role="cell" data-label="対戦相手" class="opponent-cell">${renderOpponent(row)}</span>
         <span role="cell" data-label="結果">${renderResult(row.result)}</span>
       </div>
     `).join('');

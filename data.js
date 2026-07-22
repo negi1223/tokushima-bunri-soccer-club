@@ -131,8 +131,19 @@ const aboutData = {
    text:   ホームの最新6件カードに表示される「短い説明文」
    detail: 更新一覧ページ（news.html）のアコーディオンでのみ表示される「詳しい内容」。
            省略した場合はホームと同じ text がそのまま使われる
+   pinned: true にすると「固定」タグが付く（更新一覧ページでは「重要」タグになる）。
+           表示順はほかと同じく日付の新しい順のまま変わらないが、
+           newsMaxItems（最新6件）の件数には数えられず、必ずどこかに表示され続ける
    ------------------------------------------------------------------------- */
 const newsData = [
+  {
+    tag: "info",
+    date: "2026.04.01",
+    title: "見学・体験練習について",
+    text: "見学・体験は随時受け付けています。詳しくはQ&Aをご覧ください。",
+    pinned: true,
+    link: ""
+  },
   {
     tag: "match",
     date: "2026.05.18",
@@ -185,7 +196,10 @@ const newsData = [
      このデータの代わりにスプレッドシートの内容が表示されます。
      未設定、または読み込みに失敗した場合の「保険」としてこのデータが使われます。
 
-   season: 表示する年度。siteData.currentSeason と一致する行だけが表示されます
+   season:      表示する年度。siteData.currentSeason と一致する行だけが表示されます
+   homeAway:    "HOME" または "AWAY"（省略可。省略時はバッジ非表示）
+   kickoffTime: キックオフ時刻。例: "14:00"（省略可）
+   venue:       試合会場。例: "野市陸上"（省略可）
    result: { type: "link",    url: "...", label: "SNSで確認する" }
         または { type: "score", text: "3-1 勝",  win: true  }   ※勝ち
         または { type: "score", text: "0-2 負",  win: false }   ※負け
@@ -198,6 +212,9 @@ const scheduleData = [
     season: "2026",
     competition: "SUL2 第1節",
     opponent: "高知工科大学",
+    homeAway: "AWAY",
+    kickoffTime: "14:00",
+    venue: "野市陸上",
     result: { type: "link", url: "https://www.instagram.com/p/DXjOq2Rjk4_/", label: "SNSで確認する" }
   },
   {
@@ -205,6 +222,9 @@ const scheduleData = [
     season: "2026",
     competition: "SUL2 第2節",
     opponent: "香川大学",
+    homeAway: "AWAY",
+    kickoffTime: "11:30",
+    venue: "生島M",
     result: { type: "link", url: "https://www.instagram.com/p/DX0-1WpgApD/", label: "SNSで確認する" }
   },
   {
@@ -212,6 +232,9 @@ const scheduleData = [
     season: "2026",
     competition: "SUL2 第3節",
     opponent: "鳴門教育大学",
+    homeAway: "HOME",
+    kickoffTime: "18:00",
+    venue: "TSV",
     result: { type: "link", url: "https://www.instagram.com/p/DX9VqNPGnOj/", label: "SNSで確認する" }
   },
   {
@@ -219,6 +242,9 @@ const scheduleData = [
     season: "2026",
     competition: "SUL2 第4節",
     opponent: "徳島大学",
+    homeAway: "AWAY",
+    kickoffTime: "17:00",
+    venue: "TSV",
     result: { type: "link", url: "https://www.instagram.com/p/DYHvnraGmpp/", label: "SNSで確認する" }
   },
   {

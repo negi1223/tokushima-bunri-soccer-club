@@ -453,9 +453,16 @@ input, textarea, select{ font-family: inherit; font-size: 1rem; }
   letter-spacing: .02em;
   padding-top: 2px;
 }
-.news-tag{
+.news-tag-group{
   grid-area: tag;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* お知らせタグと固定/重要タグの横幅を揃える */
+  gap: 6px;
+}
+.news-tag{
   justify-self: start;
+  text-align: center;
   font-family: var(--font-label);
   font-size: .72rem;
   font-weight: 600;
@@ -466,6 +473,18 @@ input, textarea, select{ font-family: inherit; font-size: 1rem; }
 .news-tag--match{ background: var(--red); color: var(--white); }
 .news-tag--info{ border: 1.5px solid var(--ink); color: var(--ink); }
 .news-tag--recruit{ background: var(--ink); color: var(--white); }
+.news-tag-pinned{
+  text-align: center;
+  font-family: var(--font-label);
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: .22em .8em;
+  background: var(--paper);
+  color: var(--red);
+  border: 1.5px solid var(--red);
+  transform: skewX(-10deg);
+}
 .news-title{
   grid-area: title;
   font-family: var(--font-body);
@@ -502,7 +521,7 @@ input, textarea, select{ font-family: inherit; font-size: 1rem; }
       "more  more";
     row-gap: 6px;
   }
-  .news-tag{ justify-self: end; }
+  .news-tag-group{ justify-self: end; align-items: stretch; }
 }
 
 /* =========================================================
@@ -608,6 +627,41 @@ input, textarea, select{ font-family: inherit; font-size: 1rem; }
 }
 .scoreboard-row:last-child{ border-bottom: none; }
 .scoreboard-row [data-label="対戦相手"]{ font-weight: 600; color: var(--white); }
+.opponent-cell{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 10px;
+  row-gap: 2px;
+}
+.opponent-name{ font-weight: 600; color: var(--white); }
+.opponent-detail-link{
+  margin-left: 4px;
+  font-weight: 500;
+  font-size: .82rem;
+  color: var(--red);
+  white-space: nowrap;
+}
+.opponent-detail-link:hover{ text-decoration: underline; }
+.opponent-sub{
+  flex-basis: 100%;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: .76rem;
+  letter-spacing: 0;
+  color: rgba(255,255,255,.55);
+}
+.ha-badge{
+  font-family: var(--font-label);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: .2em .6em;
+  border-radius: 2px;
+  transform: skewX(-10deg);
+}
+.ha-badge.ha-home{ background: var(--red); color: var(--white); }
+.ha-badge.ha-away{ background: rgba(255,255,255,.15); color: var(--white); border: 1px solid rgba(255,255,255,.4); }
 .scoreboard-head{
   background: rgba(255,255,255,.07);
   font-size: .76rem;
@@ -651,15 +705,20 @@ input, textarea, select{ font-family: inherit; font-size: 1rem; }
 @media (max-width: 760px){
   .scoreboard-head{ display: none; }
   .scoreboard-row{
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr auto;
     grid-template-areas:
-      "date result"
-      "opp opp"
-      "comp comp";
+      "date   result"
+      "opp    result"
+      "comp   result";
     row-gap: 6px;
+    column-gap: 14px;
   }
   .scoreboard-row [data-label="日付"]{ grid-area: date; }
-  .scoreboard-row [data-label="結果"]{ grid-area: result; justify-self: end; }
+  .scoreboard-row [data-label="結果"]{
+    grid-area: result;
+    justify-self: end;
+    align-self: center;
+  }
   .scoreboard-row [data-label="対戦相手"]{ grid-area: opp; font-size: 1.05rem; }
   .scoreboard-row [data-label="大会"]{ grid-area: comp; opacity: .7; }
 }

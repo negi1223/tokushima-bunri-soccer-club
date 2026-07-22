@@ -55,12 +55,14 @@
         <h2 class="section-title"><span class="section-title-en">News</span><span class="section-title-jp">更新一覧</span></h2>
         <a href="index.html#news" class="section-link">← トップページに戻る</a>
       </div>
+      <p class="sync-warning" id="newsSyncWarning" hidden>⚠ 最新の情報を読み込めませんでした。表示中の内容は最新でない可能性があります。</p>
 
       <div class="filter-bar" role="group" aria-label="ニュースの種類で絞り込み">
         <button class="filter-btn is-active" data-filter="all">全て</button>
         <button class="filter-btn" data-filter="match">試合</button>
         <button class="filter-btn" data-filter="info">お知らせ</button>
         <button class="filter-btn" data-filter="recruit">募集</button>
+        <button class="filter-btn" data-filter="pinned">重要</button>
       </div>
 
       <div class="news-grid" id="archiveList">

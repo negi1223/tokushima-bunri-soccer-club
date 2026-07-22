@@ -38,6 +38,7 @@
     ["title", "タイトル"],
     ["detail", "詳しい"],
     ["text", "本文"],
+    ["pinned", "固定"],
     ["link", "リンク"]
   ];
   const NEWS_TAG_MAP = { "試合": "match", "お知らせ": "info", "募集": "recruit" };
@@ -47,6 +48,9 @@
     ["season", "年度"],
     ["date", "日付"],
     ["competition", "大会"],
+    ["homeAway", "ホーム"],
+    ["kickoffTime", "キックオフ"],
+    ["venue", "会場"],
     ["opponent", "対戦相手"]
   ];
 
@@ -139,12 +143,16 @@
       .map((o) => {
         const text = getVal(o, cols, "text");
         const detail = getVal(o, cols, "detail");
+        const pinnedRaw = getVal(o, cols, "pinned");
+        // 「固定する」→true、「固定しない」（またはそれ以外・未入力）→false
+        const pinned = pinnedRaw.includes("しない") ? false : pinnedRaw.includes("する");
         return {
           tag: NEWS_TAG_MAP[getVal(o, cols, "tag")] || "info",
           date: getVal(o, cols, "date"),
           title: getVal(o, cols, "title"),
           text,
           detail: detail || text, // 「詳しい内容」が未入力なら本文をそのまま使う
+          pinned,
           link: getVal(o, cols, "link")
         };
       })
@@ -175,11 +183,19 @@
         const result = link
           ? { type: "link", url: link, label: "SNSで確認する" }
           : { type: "pending", text: "勝敗未定" };
+
+        // HOME/AWAYは「ホーム」「アウェイ」どちらの表記で回答されても認識できるようにする
+        const haRaw = getVal(o, cols, "homeAway");
+        const homeAway = /アウェイ|AWAY/i.test(haRaw) ? "AWAY" : /ホーム|HOME/i.test(haRaw) ? "HOME" : "";
+
         return {
           date: getVal(o, cols, "date"),
           season: getVal(o, cols, "season"),
           competition: getVal(o, cols, "competition"),
           opponent: getVal(o, cols, "opponent"),
+          homeAway,
+          kickoffTime: getVal(o, cols, "kickoffTime"),
+          venue: getVal(o, cols, "venue"),
           result
         };
       })
