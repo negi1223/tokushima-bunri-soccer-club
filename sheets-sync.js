@@ -36,6 +36,7 @@
     ["date", "日付"],
     ["tag", "種類"],
     ["title", "タイトル"],
+    ["detail", "詳しい"],
     ["text", "本文"],
     ["link", "リンク"]
   ];
@@ -123,13 +124,18 @@
   function buildNewsData(headers, objects) {
     const cols = resolveColumns(headers, NEWS_KEYWORDS);
     return objects
-      .map((o) => ({
-        tag: NEWS_TAG_MAP[getVal(o, cols, "tag")] || "info",
-        date: getVal(o, cols, "date"),
-        title: getVal(o, cols, "title"),
-        text: getVal(o, cols, "text"),
-        link: getVal(o, cols, "link")
-      }))
+      .map((o) => {
+        const text = getVal(o, cols, "text");
+        const detail = getVal(o, cols, "detail");
+        return {
+          tag: NEWS_TAG_MAP[getVal(o, cols, "tag")] || "info",
+          date: getVal(o, cols, "date"),
+          title: getVal(o, cols, "title"),
+          text,
+          detail: detail || text, // 「詳しい内容」が未入力なら本文をそのまま使う
+          link: getVal(o, cols, "link")
+        };
+      })
       .filter((n) => n.title)
       .slice(-SAFETY_MAX_ROWS); // 念のための安全上限（新しい日付順への並び替えと件数の絞り込みは script.js 側で行う）
   }

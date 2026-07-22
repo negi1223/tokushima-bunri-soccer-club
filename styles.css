@@ -741,6 +741,7 @@ input, textarea, select{ font-family: inherit; font-size: 1rem; }
 }
 .player-card--staff:hover{ box-shadow: 6px 6px 0 var(--ink); }
 .player-card.is-hidden{ display: none; }
+.news-card.is-hidden{ display: none; }
 .player-photo{
   aspect-ratio: 1/1;
   background:
@@ -1032,4 +1033,45 @@ input, textarea, select{ font-family: inherit; font-size: 1rem; }
   font-size: .76rem;
   color: rgba(255,255,255,.45);
   margin: 10px 0 0;
+}
+
+/* =========================================================
+
+/* =========================================================
+   NEWS ARCHIVE PAGE（news.html：更新一覧ページ）
+   ホームの News セクションと同じ .news-grid / .news-card を再利用し、
+   「詳しく見る」をアコーディオンの開閉ボタンにしたもの。
+========================================================= */
+
+/* 「詳しく見る」を <a> ではなく <button> として使うためのリセット
+   （見た目は .news-more の基本スタイルをそのまま流用する） */
+button.news-more{
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+/* 矢印アイコンを開閉状態に応じて切り替える（ホームの <a> 版には
+   aria-expanded が無いので、この一覧ページの分だけに適用される） */
+.news-more[aria-expanded]::after{ content: " ▾"; }
+.news-more[aria-expanded="true"]::after{ content: " ▴"; }
+
+/* 開閉する詳細パネル（.news-card のグリッドに全幅の行として追加する） */
+.news-detail{
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  color: var(--ink-soft);
+  font-size: .92rem;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+.news-detail p{ margin: 0 0 10px; }
+.news-detail p:last-child{ margin-bottom: 0; }
+.news-detail a{ color: var(--red); font-weight: 600; border-bottom: 1px solid var(--red); white-space: normal; }
+
+@media (max-width: 720px){
+  .news-detail{ grid-column: 1 / -1; }
 }

@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       判断されてスクロールされないことがあるため、JSで確実に動かす）
   ========================================================= */
   document.querySelectorAll('.logo').forEach((el) => {
+    if (el.getAttribute('href') !== '#top') return; // 別ページへのリンク（例：news.html→index.html）はそのまま遷移させる
     el.addEventListener('click', (e) => {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
