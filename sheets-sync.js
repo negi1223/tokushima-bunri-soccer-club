@@ -22,7 +22,7 @@
    ========================================================================= */
 
 (function () {
-  const FETCH_TIMEOUT_MS = 5000;
+  const FETCH_TIMEOUT_MS = 9000;
   // 通信自体の安全上限（万一シートに大量の行があっても処理が重くならないための保険）。
   // 実際に表示する件数は sheetsSyncConfig.newsMaxItems / currentSeason で決まります。
   const SAFETY_MAX_ROWS = 100;
@@ -60,6 +60,18 @@
       return await res.text();
     } finally {
       clearTimeout(timer);
+    }
+  }
+
+  // 1回失敗しても、一時的な通信の乱れの可能性があるので少し待ってもう一度だけ試す。
+  // それでもダメだったときだけ本当の「失敗」として扱う
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  async function fetchWithRetry(url) {
+    try {
+      return await fetchWithTimeout(url);
+    } catch (err) {
+      await wait(700);
+      return await fetchWithTimeout(url);
     }
   }
 
@@ -190,10 +202,11 @@
 
     if (sheetsSyncConfig.newsCsvUrl) {
       tasks.push(
-        fetchWithTimeout(sheetsSyncConfig.newsCsvUrl)
+        fetchWithRetry(sheetsSyncConfig.newsCsvUrl)
           .then((text) => {
             const { headers, objects } = csvToTable(text);
             window.__syncedNewsData = buildNewsData(headers, objects);
+            window.__newsSyncFailed = false; // 成功したら必ずリセットする
           })
           .catch((err) => {
             window.__newsSyncFailed = true; // 画面側で「読み込めませんでした」の注意書きを出す判定に使う
@@ -204,10 +217,11 @@
 
     if (sheetsSyncConfig.scheduleCsvUrl) {
       tasks.push(
-        fetchWithTimeout(sheetsSyncConfig.scheduleCsvUrl)
+        fetchWithRetry(sheetsSyncConfig.scheduleCsvUrl)
           .then((text) => {
             const { headers, objects } = csvToTable(text);
             window.__syncedScheduleData = buildScheduleData(headers, objects);
+            window.__scheduleSyncFailed = false; // 成功したら必ずリセットする
           })
           .catch((err) => {
             window.__scheduleSyncFailed = true;
