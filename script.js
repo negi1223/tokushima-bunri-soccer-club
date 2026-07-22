@@ -1,5 +1,19 @@
 document.addEventListener('DOMContentLoaded', async () => {
 
+  /* =========================================================
+     ページを「更新（リロード）」した時は、URLに #news などが
+     残っていても必ず一番上から表示する。
+     news.htmlの「トップページに戻る」リンクなど、通常のページ遷移で
+     来た場合はそのまま該当セクションにジャンプする（今まで通り）
+  ========================================================= */
+  try {
+    const navEntries = performance.getEntriesByType('navigation');
+    const navType = navEntries.length ? navEntries[0].type : '';
+    if (navType === 'reload' && window.location.hash) {
+      window.scrollTo(0, 0);
+    }
+  } catch (e) { /* 古いブラウザでは何もしない */ }
+
   // Googleスプレッドシート連携（設定されていれば news / schedule を上書きする）
   // 通信中も他の初期化処理は止めず、ニュース・試合結果を描画する直前でだけ待つ
   const sheetsSyncPromise = (typeof window.loadSheetsData === 'function')
