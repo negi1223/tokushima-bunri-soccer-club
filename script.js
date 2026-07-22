@@ -152,23 +152,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   const cfg = (typeof sheetsSyncConfig !== 'undefined') ? sheetsSyncConfig : {};
   const newsMaxItems = cfg.newsMaxItems || 6;
 
-  // "2026.06.01" "2026/6/1" "2026-06-01" のような日付文字列を、並び替え用の
-  // 数値（20260601）に変換する。"後期日程" のような日付以外の文字列は null を返す
+  // "2026.06.01" "2026/6/1" "2026-06-01"（年が先）と
+  // "6/1/2026"（Googleフォームの日付質問が月-日-年の順で出力する場合）の
+  // どちらの並びでも読み取れるようにする。"後期日程" のような日付以外の文字列は null を返す
+  const extractYMD = (str) => {
+    const s = String(str || '').trim();
+    let m = s.match(/(\d{4})[.\/\-](\d{1,2})[.\/\-](\d{1,2})/); // 年が先
+    if (m) return { y: Number(m[1]), mo: Number(m[2]), d: Number(m[3]) };
+    m = s.match(/(\d{1,2})[.\/\-](\d{1,2})[.\/\-](\d{4})/); // 月/日/年の順
+    if (m) return { y: Number(m[3]), mo: Number(m[1]), d: Number(m[2]) };
+    return null;
+  };
   const parseDateValue = (str) => {
-    const m = String(str || '').match(/(\d{4})[.\/\-](\d{1,2})[.\/\-](\d{1,2})/);
-    if (!m) return null;
-    const [, y, mo, d] = m;
-    return Number(y) * 10000 + Number(mo) * 100 + Number(d);
+    const ymd = extractYMD(str);
+    return ymd ? ymd.y * 10000 + ymd.mo * 100 + ymd.d : null;
   };
 
   // 日付から「年度」を自動計算する（4月1日～翌年3月31日を1年度とする学校年度のルール）。
   // 例：2026.04.01～2027.03.31 はすべて「2026年度」
   // これにより、試合結果フォームで「年度」を毎回入力してもらう必要がなくなる
   const deriveSeason = (str) => {
-    const m = String(str || '').match(/(\d{4})[.\/\-](\d{1,2})/);
-    if (!m) return '';
-    const y = Number(m[1]), mo = Number(m[2]);
-    return String(mo >= 4 ? y : y - 1);
+    const ymd = extractYMD(str);
+    if (!ymd) return '';
+    return String(ymd.mo >= 4 ? ymd.y : ymd.y - 1);
   };
 
   // 「今」が何年度かも自動計算する。sheetsSyncConfig.currentSeason に何か

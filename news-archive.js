@@ -17,12 +17,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[c]));
 
-  // "2026.06.01" 等の日付文字列を並び替え用の数値に変換（script.jsと同じロジック）
+  // "2026.06.01"（年が先）と "6/1/2026"（Googleフォームの日付質問が
+  // 月-日-年の順で出力する場合）のどちらでも読み取れるようにする（script.jsと同じロジック）
   const parseDateValue = (str) => {
-    const m = String(str || '').match(/(\d{4})[.\/\-](\d{1,2})[.\/\-](\d{1,2})/);
-    if (!m) return null;
-    const [, y, mo, d] = m;
-    return Number(y) * 10000 + Number(mo) * 100 + Number(d);
+    const s = String(str || '').trim();
+    let m = s.match(/(\d{4})[.\/\-](\d{1,2})[.\/\-](\d{1,2})/); // 年が先
+    if (m) return Number(m[1]) * 10000 + Number(m[2]) * 100 + Number(m[3]);
+    m = s.match(/(\d{1,2})[.\/\-](\d{1,2})[.\/\-](\d{4})/); // 月/日/年の順
+    if (m) return Number(m[3]) * 10000 + Number(m[1]) * 100 + Number(m[2]);
+    return null;
   };
 
   const list = document.getElementById('archiveList');
