@@ -151,7 +151,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   await sheetsSyncPromise;
   const cfg = (typeof sheetsSyncConfig !== 'undefined') ? sheetsSyncConfig : {};
   const newsMaxItems = cfg.newsMaxItems || 6;
-  const currentSeason = cfg.currentSeason || '';
 
   // "2026.06.01" "2026/6/1" "2026-06-01" のような日付文字列を、並び替え用の
   // 数値（20260601）に変換する。"後期日程" のような日付以外の文字列は null を返す
@@ -161,6 +160,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     const [, y, mo, d] = m;
     return Number(y) * 10000 + Number(mo) * 100 + Number(d);
   };
+
+  // 日付から「年度」を自動計算する（4月1日～翌年3月31日を1年度とする学校年度のルール）。
+  // 例：2026.04.01～2027.03.31 はすべて「2026年度」
+  // これにより、試合結果フォームで「年度」を毎回入力してもらう必要がなくなる
+  const deriveSeason = (str) => {
+    const m = String(str || '').match(/(\d{4})[.\/\-](\d{1,2})/);
+    if (!m) return '';
+    const y = Number(m[1]), mo = Number(m[2]);
+    return String(mo >= 4 ? y : y - 1);
+  };
+
+  // 「今」が何年度かも自動計算する。sheetsSyncConfig.currentSeason に何か
+  // 入力されていればそちらを優先する（先取りで来年度の日程を見せたい時などに使える）。
+  // 空欄のままなら、パソコンの今日の日付から自動的に判定されるので、
+  // 4月になっても手動で書き換える必要はない
+  const currentSeason = (cfg.currentSeason && String(cfg.currentSeason).trim())
+    ? String(cfg.currentSeason).trim()
+    : (() => {
+        const now = new Date();
+        return String(now.getMonth() + 1 >= 4 ? now.getFullYear() : now.getFullYear() - 1);
+      })();
 
   // データソース（Googleシート優先、なければ data.js のサンプル）を選んだうえで、
   // 「ニュースは新しい日付順に最新◯件まで（固定はその6件のカウントに含めない）」
@@ -177,7 +197,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const rawScheduleData = window.__syncedScheduleData || (typeof scheduleData !== 'undefined' ? scheduleData : []);
   const effectiveScheduleData = rawScheduleData
-    .filter((s) => !currentSeason || !s.season || s.season === currentSeason)
+    .filter((s) => { const season = deriveSeason(s.date); return !season || season === currentSeason; })
     .sort((a, b) => (parseDateValue(a.date) ?? Infinity) - (parseDateValue(b.date) ?? Infinity)); // 1月→12月の順（日付不明は最後）
 
   // フォームを設定しているのに読み込みに失敗し、サンプルデータで代用している場合だけ、

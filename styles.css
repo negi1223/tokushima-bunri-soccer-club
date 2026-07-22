@@ -635,14 +635,6 @@ input, textarea, select{ font-family: inherit; font-size: 1rem; }
   row-gap: 2px;
 }
 .opponent-name{ font-weight: 600; color: var(--white); }
-.opponent-detail-link{
-  margin-left: 4px;
-  font-weight: 500;
-  font-size: .82rem;
-  color: var(--red);
-  white-space: nowrap;
-}
-.opponent-detail-link:hover{ text-decoration: underline; }
 .opponent-sub{
   flex-basis: 100%;
   font-family: var(--font-body);

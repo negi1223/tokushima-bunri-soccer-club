@@ -33,17 +33,19 @@
      （壊れる心配なく、準備ができてから設定できます）
 
    newsMaxItems：  ニュースを新しい順に何件まで表示するか（初期値6）
-   currentSeason： 試合結果に表示する「今年度」。試合結果フォームの「年度」列
-                   （またはscheduleDataのseason）とここが一致する行だけが表示されます。
-                   年度が変わったら、ここの数字を書き換えるだけで自動的に去年の分は
-                   表示されなくなります（データ自体はスプレッドシートに残るので、
+   currentSeason： 試合結果に表示する「今年度」を手動で指定したい時だけ使う（例："2027"）。
+                   空欄（""）のままにしておくと、パソコンの「今日の日付」から
+                   4月1日～翌年3月31日を1年度として自動で判定されるので、
+                   通常は何も書き換える必要はありません
+                   （年度をまたぐ4月になっても、自動的に前年度の試合結果は
+                   表示されなくなります。データ自体は消えないので、
                    過去の記録として振り返ることは引き続き可能です）
    ------------------------------------------------------------------------- */
 const sheetsSyncConfig = {
   newsCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWUJmUrO-zjJTRx_-hEenJ_wW028Us_k8UEvjPSbzxpwLR_tgIG0NHK4FDM5npFfz4d-aIzcXkyoBY/pub?output=csv",
   scheduleCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQwa4U__S9rmKoTSKPCdfhdd_OAUhcZ9uoP03ZAa378oeWz2MhmypaNOK0s0Hp6lkoPYL_vb3wRYq6x/pub?output=csv",
   newsMaxItems: 6,
-  currentSeason: "2026"
+  currentSeason: "" // 空欄なら自動判定。手動で固定したい年度がある時だけ "2027" のように入力する
 };
 
 
@@ -196,7 +198,8 @@ const newsData = [
      このデータの代わりにスプレッドシートの内容が表示されます。
      未設定、または読み込みに失敗した場合の「保険」としてこのデータが使われます。
 
-   season:      表示する年度。siteData.currentSeason と一致する行だけが表示されます
+   ※年度は date（日付）から自動で計算されるので、season の項目は不要です
+     （4月1日～翌年3月31日を1年度として、自動的に今年度分だけ表示されます）
    homeAway:    "HOME" または "AWAY"（省略可。省略時はバッジ非表示）
    kickoffTime: キックオフ時刻。例: "14:00"（省略可）
    venue:       試合会場。例: "野市陸上"（省略可）
@@ -209,7 +212,6 @@ const newsData = [
 const scheduleData = [
   {
     date: "2026.04.25",
-    season: "2026",
     competition: "SUL2 第1節",
     opponent: "高知工科大学",
     homeAway: "AWAY",
@@ -219,7 +221,6 @@ const scheduleData = [
   },
   {
     date: "2026.05.02",
-    season: "2026",
     competition: "SUL2 第2節",
     opponent: "香川大学",
     homeAway: "AWAY",
@@ -229,7 +230,6 @@ const scheduleData = [
   },
   {
     date: "2026.05.05",
-    season: "2026",
     competition: "SUL2 第3節",
     opponent: "鳴門教育大学",
     homeAway: "HOME",
@@ -239,7 +239,6 @@ const scheduleData = [
   },
   {
     date: "2026.05.09",
-    season: "2026",
     competition: "SUL2 第4節",
     opponent: "徳島大学",
     homeAway: "AWAY",
@@ -249,14 +248,12 @@ const scheduleData = [
   },
   {
     date: "2026.05.18",
-    season: "2026",
     competition: "練習試合",
     opponent: "四国学院大学",
     result: { type: "link", url: "https://www.instagram.com/reel/DYdjj3vJVxJ/", label: "SNSで確認する" }
   },
   {
     date: "後期日程",
-    season: "2026",
     competition: "SUL2 / 総理大臣杯 / 新人戦",
     opponent: "調整中",
     result: { type: "pending", text: "勝敗未定" }
@@ -264,7 +261,6 @@ const scheduleData = [
   // 例：スコアが分かったら下の形でコピペして追加・置き換え
   // {
   //   date: "2026.06.01",
-  //   season: "2026",
   //   competition: "SUL2 第5節",
   //   opponent: "○○大学",
   //   result: { type: "score", text: "3-1 勝", win: true }

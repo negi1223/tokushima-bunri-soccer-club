@@ -45,7 +45,6 @@
 
   const SCHEDULE_KEYWORDS = [
     ["resultLink", "リンク"],
-    ["season", "年度"],
     ["date", "日付"],
     ["competition", "大会"],
     ["homeAway", "ホーム"],
@@ -173,7 +172,6 @@
 
   function buildScheduleData(headers, objects) {
     const cols = resolveColumns(headers, SCHEDULE_KEYWORDS);
-    const currentSeason = (typeof sheetsSyncConfig !== "undefined" && sheetsSyncConfig.currentSeason) || "";
     const rows = objects
       .map((o) => {
         // 「結果」を選ぶ質問の文言そのものには依存せず、
@@ -190,7 +188,8 @@
 
         return {
           date: getVal(o, cols, "date"),
-          season: getVal(o, cols, "season"),
+          // 年度はここでは読み取らない。日付から自動計算する（script.js側）ので、
+          // フォームに「年度」の質問は不要
           competition: getVal(o, cols, "competition"),
           opponent: getVal(o, cols, "opponent"),
           homeAway,
@@ -201,13 +200,9 @@
       })
       .filter((s) => s.date || s.opponent);
 
-    return dedupeBySameMatch(rows)
-      // 年度が入力されていて、かつ今年度と一致しないものは表示しない
-      // （年度が空欄の行は、記入漏れとみなして念のため表示する）
-      .filter((s) => !currentSeason || !s.season || s.season === currentSeason)
-      .slice(0, SAFETY_MAX_ROWS);
-      // ※1月→12月の順への並び替えは script.js 側で日付を見て行うので、
-      //   フォームにはどの順番で入力しても大丈夫です。
+    return dedupeBySameMatch(rows).slice(0, SAFETY_MAX_ROWS);
+    // ※1月→12月の順への並び替えと、今年度の絞り込みは script.js 側で
+    //   日付から自動で行うので、フォームにはどの順番で入力しても大丈夫です。
   }
 
   // ---- メイン処理：data.js の sheetsSyncConfig を見て、あれば読み込む ----
