@@ -12,6 +12,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }[c]));
 
   /* =========================================================
+     ロゴをクリックしたら一番上へスクロール
+     （ヘッダーが sticky（常に上に張り付く）になっていると、
+      #top への通常のアンカーリンクだけでは「もう見えているから」と
+      判断されてスクロールされないことがあるため、JSで確実に動かす）
+  ========================================================= */
+  document.querySelectorAll('.logo').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  /* =========================================================
      モバイルナビゲーションの開閉
   ========================================================= */
   const navToggle = document.getElementById('navToggle');

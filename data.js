@@ -40,8 +40,8 @@
                    過去の記録として振り返ることは引き続き可能です）
    ------------------------------------------------------------------------- */
 const sheetsSyncConfig = {
-  newsCsvUrl: "",
-  scheduleCsvUrl: "",
+  newsCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWUJmUrO-zjJTRx_-hEenJ_wW028Us_k8UEvjPSbzxpwLR_tgIG0NHK4FDM5npFfz4d-aIzcXkyoBY/pub?output=csv",
+  scheduleCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQwa4U__S9rmKoTSKPCdfhdd_OAUhcZ9uoP03ZAa378oeWz2MhmypaNOK0s0Hp6lkoPYL_vb3wRYq6x/pub?output=csv",
   newsMaxItems: 6,
   currentSeason: "2026"
 };
