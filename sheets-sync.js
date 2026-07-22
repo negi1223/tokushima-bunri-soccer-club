@@ -46,8 +46,7 @@
     ["season", "年度"],
     ["date", "日付"],
     ["competition", "大会"],
-    ["opponent", "対戦相手"],
-    ["resultType", "結果"]   // 広い意味になりがちなキーワードなので最後に探す
+    ["opponent", "対戦相手"]
   ];
 
   // ---- タイムアウト付きfetch ----
@@ -151,16 +150,13 @@
     const currentSeason = (typeof sheetsSyncConfig !== "undefined" && sheetsSyncConfig.currentSeason) || "";
     const rows = objects
       .map((o) => {
-        const type = getVal(o, cols, "resultType");
-        // フォームの「結果」の選択肢 → サイトで表示される文字
-        //   「リンク」という文字を含む選択肢（例：Instagramのリンクを貼る） → SNSで確認する
-        //   それ以外（例：勝敗未定）                                    → 勝敗未定
-        let result;
-        if (type.includes("リンク")) {
-          result = { type: "link", url: getVal(o, cols, "resultLink"), label: "SNSで確認する" };
-        } else {
-          result = { type: "pending", text: "勝敗未定" };
-        }
+        // 「結果」を選ぶ質問の文言そのものには依存せず、
+        // リンクURLの欄に何か入力されているかどうかだけで判定する
+        // （選択肢の言い回しをどう変えても壊れないようにするため）
+        const link = getVal(o, cols, "resultLink").trim();
+        const result = link
+          ? { type: "link", url: link, label: "SNSで確認する" }
+          : { type: "pending", text: "勝敗未定" };
         return {
           date: getVal(o, cols, "date"),
           season: getVal(o, cols, "season"),
