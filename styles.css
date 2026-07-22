@@ -1092,6 +1092,9 @@ button.news-more{
   border-radius: 4px;
   width: fit-content;
 }
+/* display:flex が [hidden] より後に評価されると、JSで hidden=true にしても
+   表示され続けてしまう。hidden属性が付いている時は必ず非表示にする */
+.sync-warning[hidden]{ display: none; }
 .sync-warning--light{
   color: #F4D9A0;
   background: rgba(255,255,255,.08);
