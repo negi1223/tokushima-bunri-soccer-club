@@ -626,6 +626,9 @@ input, textarea, select{ font-family: inherit; font-size: 1rem; }
   letter-spacing: .01em;
 }
 .scoreboard-row:last-child{ border-bottom: none; }
+.scoreboard-row--today{
+  border-top: 2px solid var(--red);
+}
 .scoreboard-row [data-label="対戦相手"]{ font-weight: 600; color: var(--white); }
 .opponent-cell{
   display: flex;

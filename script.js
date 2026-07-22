@@ -259,8 +259,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       return `${haBadge}<span class="opponent-name">${escapeHtml(row.opponent)}</span>${sub}`;
     };
 
-    scheduleBody.innerHTML = effectiveScheduleData.map((row) => `
-      <div class="scoreboard-row" role="row">
+    // 今日以降で最初に来る試合の行を探す（そこの上の罫線だけ目立たせて、
+    // 「ここから上が消化済み、ここから下がこれから」を視覚的に分かるようにする）
+    const now = new Date();
+    const todayValue = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+    let dividerIndex = -1;
+    for (let i = 0; i < effectiveScheduleData.length; i++) {
+      const v = parseDateValue(effectiveScheduleData[i].date);
+      if (v !== null && v >= todayValue) { dividerIndex = i; break; }
+    }
+
+    scheduleBody.innerHTML = effectiveScheduleData.map((row, i) => `
+      <div class="scoreboard-row${i === dividerIndex && dividerIndex > 0 ? ' scoreboard-row--today' : ''}" role="row">
         <span role="cell" data-label="日付">${escapeHtml(row.date)}</span>
         <span role="cell" data-label="大会">${escapeHtml(row.competition)}</span>
         <span role="cell" data-label="対戦相手" class="opponent-cell">${renderOpponent(row)}</span>
