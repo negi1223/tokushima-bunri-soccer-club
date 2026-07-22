@@ -40,8 +40,8 @@
                    過去の記録として振り返ることは引き続き可能です）
    ------------------------------------------------------------------------- */
 const sheetsSyncConfig = {
-  newsCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWUJmUrO-zjJTRx_-hEenJ_wW028Us_k8UEvjPSbzxpwLR_tgIG0NHK4FDM5npFfz4d-aIzcXkyoBY/pub?output=csv",
-  scheduleCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQwa4U__S9rmKoTSKPCdfhdd_OAUhcZ9uoP03ZAa378oeWz2MhmypaNOK0s0Hp6lkoPYL_vb3wRYq6x/pub?output=csv",
+  newsCsvUrl: "",
+  scheduleCsvUrl: "",
   newsMaxItems: 6,
   currentSeason: "2026"
 };
@@ -182,11 +182,11 @@ const newsData = [
      未設定、または読み込みに失敗した場合の「保険」としてこのデータが使われます。
 
    season: 表示する年度。siteData.currentSeason と一致する行だけが表示されます
-   result: { type: "link",    url: "...", label: "SNSで確認" }
+   result: { type: "link",    url: "...", label: "SNSで確認する" }
         または { type: "score", text: "3-1 勝",  win: true  }   ※勝ち
         または { type: "score", text: "0-2 負",  win: false }   ※負け
         または { type: "score", text: "1-1 分け", win: null  }  ※引き分け
-        または { type: "pending", text: "日程確定次第更新" }
+        または { type: "pending", text: "勝敗未定" }
    ------------------------------------------------------------------------- */
 const scheduleData = [
   {
@@ -194,42 +194,42 @@ const scheduleData = [
     season: "2026",
     competition: "SUL2 第1節",
     opponent: "高知工科大学",
-    result: { type: "link", url: "https://www.instagram.com/p/DXjOq2Rjk4_/", label: "SNSで確認" }
+    result: { type: "link", url: "https://www.instagram.com/p/DXjOq2Rjk4_/", label: "SNSで確認する" }
   },
   {
     date: "2026.05.02",
     season: "2026",
     competition: "SUL2 第2節",
     opponent: "香川大学",
-    result: { type: "link", url: "https://www.instagram.com/p/DX0-1WpgApD/", label: "SNSで確認" }
+    result: { type: "link", url: "https://www.instagram.com/p/DX0-1WpgApD/", label: "SNSで確認する" }
   },
   {
     date: "2026.05.05",
     season: "2026",
     competition: "SUL2 第3節",
     opponent: "鳴門教育大学",
-    result: { type: "link", url: "https://www.instagram.com/p/DX9VqNPGnOj/", label: "SNSで確認" }
+    result: { type: "link", url: "https://www.instagram.com/p/DX9VqNPGnOj/", label: "SNSで確認する" }
   },
   {
     date: "2026.05.09",
     season: "2026",
     competition: "SUL2 第4節",
     opponent: "徳島大学",
-    result: { type: "link", url: "https://www.instagram.com/p/DYHvnraGmpp/", label: "SNSで確認" }
+    result: { type: "link", url: "https://www.instagram.com/p/DYHvnraGmpp/", label: "SNSで確認する" }
   },
   {
     date: "2026.05.18",
     season: "2026",
     competition: "練習試合",
     opponent: "四国学院大学",
-    result: { type: "link", url: "https://www.instagram.com/reel/DYdjj3vJVxJ/", label: "SNSで確認" }
+    result: { type: "link", url: "https://www.instagram.com/reel/DYdjj3vJVxJ/", label: "SNSで確認する" }
   },
   {
     date: "後期日程",
     season: "2026",
     competition: "SUL2 / 総理大臣杯 / 新人戦",
     opponent: "調整中",
-    result: { type: "pending", text: "日程確定次第更新" }
+    result: { type: "pending", text: "勝敗未定" }
   }
   // 例：スコアが分かったら下の形でコピペして追加・置き換え
   // {

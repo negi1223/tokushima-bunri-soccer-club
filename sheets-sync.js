@@ -43,8 +43,6 @@
 
   const SCHEDULE_KEYWORDS = [
     ["resultLink", "リンク"],
-    ["resultScore", "スコア"],
-    ["resultOutcome", "勝敗"],
     ["season", "年度"],
     ["date", "日付"],
     ["competition", "大会"],
@@ -154,16 +152,14 @@
     const rows = objects
       .map((o) => {
         const type = getVal(o, cols, "resultType");
+        // フォームの「結果」の選択肢 → サイトで表示される文字
+        //   「リンク」という文字を含む選択肢（例：Instagramのリンクを貼る） → SNSで確認する
+        //   それ以外（例：勝敗未定）                                    → 勝敗未定
         let result;
         if (type.includes("リンク")) {
-          result = { type: "link", url: getVal(o, cols, "resultLink"), label: "SNSで確認" };
-        } else if (type.includes("スコア") || type.includes("確定")) {
-          const outcome = getVal(o, cols, "resultOutcome");
-          const win = outcome === "勝" ? true : outcome === "負" ? false : null;
-          const badgeText = [getVal(o, cols, "resultScore"), outcome].filter(Boolean).join(" ");
-          result = { type: "score", text: badgeText || "結果未入力", win };
+          result = { type: "link", url: getVal(o, cols, "resultLink"), label: "SNSで確認する" };
         } else {
-          result = { type: "pending", text: "日程確定次第更新" };
+          result = { type: "pending", text: "勝敗未定" };
         }
         return {
           date: getVal(o, cols, "date"),
