@@ -176,6 +176,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     .filter((s) => !currentSeason || !s.season || s.season === currentSeason)
     .sort((a, b) => (parseDateValue(a.date) ?? Infinity) - (parseDateValue(b.date) ?? Infinity)); // 1月→12月の順（日付不明は最後）
 
+  // フォームを設定しているのに読み込みに失敗し、サンプルデータで代用している場合だけ、
+  // 控えめな注意書きを表示する（フォーム未設定の場合は表示しない）
+  const newsSyncWarning = document.getElementById('newsSyncWarning');
+  if (newsSyncWarning) newsSyncWarning.hidden = !(window.__newsSyncFailed && cfg.newsCsvUrl);
+
+  const scheduleSyncWarning = document.getElementById('scheduleSyncWarning');
+  if (scheduleSyncWarning) scheduleSyncWarning.hidden = !(window.__scheduleSyncFailed && cfg.scheduleCsvUrl);
+
   const newsTagLabel = { match: '試合', info: 'お知らせ', recruit: '募集' };
   const newsGrid = document.getElementById('newsGrid');
   if (newsGrid) {

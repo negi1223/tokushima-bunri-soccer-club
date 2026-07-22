@@ -1075,3 +1075,25 @@ button.news-more{
 @media (max-width: 720px){
   .news-detail{ grid-column: 1 / -1; }
 }
+
+/* =========================================================
+   同期エラーの注意書き（Googleシートの読み込みに失敗した時だけ表示）
+========================================================= */
+.sync-warning{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: .5em .9em;
+  font-size: .82rem;
+  color: #8A5A12;
+  background: #FBF1DE;
+  border: 1px solid #EAD9B4;
+  border-radius: 4px;
+  width: fit-content;
+}
+.sync-warning--light{
+  color: #F4D9A0;
+  background: rgba(255,255,255,.08);
+  border-color: rgba(244,217,160,.35);
+}

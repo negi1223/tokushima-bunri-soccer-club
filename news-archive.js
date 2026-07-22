@@ -29,6 +29,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const empty = document.getElementById('archiveEmpty');
   if (!list) return;
 
+  // フォームを設定しているのに読み込みに失敗し、サンプルデータで代用している場合だけ、
+  // 控えめな注意書きを表示する（フォーム未設定の場合は表示しない）
+  const newsSyncWarning = document.getElementById('newsSyncWarning');
+  const cfg = (typeof sheetsSyncConfig !== 'undefined') ? sheetsSyncConfig : {};
+  if (newsSyncWarning) newsSyncWarning.hidden = !(window.__newsSyncFailed && cfg.newsCsvUrl);
+
   const newsTagLabel = { match: '試合', info: 'お知らせ', recruit: '募集' };
 
   const rawNewsData = window.__syncedNewsData || (typeof newsData !== 'undefined' ? newsData : []);

@@ -195,7 +195,10 @@
             const { headers, objects } = csvToTable(text);
             window.__syncedNewsData = buildNewsData(headers, objects);
           })
-          .catch((err) => { console.warn("[news連携] 読み込みに失敗したため、data.js の内容を表示します:", err); })
+          .catch((err) => {
+            window.__newsSyncFailed = true; // 画面側で「読み込めませんでした」の注意書きを出す判定に使う
+            console.warn("[news連携] 読み込みに失敗したため、data.js の内容を表示します:", err);
+          })
       );
     }
 
@@ -206,7 +209,10 @@
             const { headers, objects } = csvToTable(text);
             window.__syncedScheduleData = buildScheduleData(headers, objects);
           })
-          .catch((err) => { console.warn("[試合結果連携] 読み込みに失敗したため、data.js の内容を表示します:", err); })
+          .catch((err) => {
+            window.__scheduleSyncFailed = true;
+            console.warn("[試合結果連携] 読み込みに失敗したため、data.js の内容を表示します:", err);
+          })
       );
     }
 
